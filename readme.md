@@ -6,7 +6,7 @@ This project is made using fennel V 1.2.0 and Love v11.4. It should work with an
 ![3D in Love2d](love3d-min.png "3D perspective in Love2d")
 
 
-## The minimal 3D Shader
+## The Minimal 3D Shader
 With the introduction of love v11 we can now implement full 3d scenes in love without modifying the binary. All we have to do is define a vertex shader and replace the default transform_projection with our own. This replaces the default orthographic projection used by love2d with a perspective projection when the vertex shader is active. Note that we also have to pass in the transform, as the transform data passed in by love2d by default is already multiplied by the orthographic projection.
 
 ``` fennel
@@ -160,7 +160,7 @@ Note this is the right hand zo perspective matrix. I should be using the left ha
 
 ```
 
-## Putting it together
+## Putting it Together
 Lets put it all together, assuming you have the shader and mesh as defined above we simply need to define our matrices set up our shader and depth canvas and we can draw a 3d scene. 
 
 I define my perspective matrix outside of my draw loop since the only times you would need to change this matrix is when the screen size changes (or if you want to update the field of view). 
