@@ -1,5 +1,7 @@
 # 3D in Love2d
-There seems to be a lack of end to end resources for applying a perspective matrix in Love2d. Hope this repo helps those who are interested in integrating 3d elements into their 2d games.
+There seems to be a lack of end to end resources for applying a perspective matrix in Love2d. Hope this repo helps those who are interested in integrating 3d elements into their love2d games.
+
+This project is made using fennel V 1.2.0 and Love v11.4. It should work with any subversion of love 11. Note: The mat4 library is a WIP.
 
 ![3D in Love2d](love3d-min.png "3D perspective in Love2d")
 
@@ -47,11 +49,11 @@ For an exhaustive list of available shader variables check out [Love2D Shader Va
 When you create a new mesh, pass in the vertex format as the first argument to `love.graphics.newMesh`. Note, throughout this project I use `lg` in place of `love.graphics`.
 
 ``` fennel
-;; vertex format = [x y z w ux uy]
-(local verticies [[0   0   0 1 0 0]
-                  [100 0   0 1 1 0]
-                  [100 100 0 1 1 1]
-                  [0   100 0 1 0 1]])
+;; vertex format [x   y   z w ux uy]
+(local vertices [[0   0   0 1 0  0]
+                 [100 0   0 1 1  0]
+                 [100 100 0 1 1  1]
+                 [0   100 0 1 0  1]])
 (local mesh (lg.newMesh vertex-format vertices :fan :static))
 ```
 
@@ -100,7 +102,8 @@ Transform moves vertices to their location in world space, view reorients world 
 
 
 The model transform matrix applies a translation, scale and rotation to a vec4 vertex. Each of these steps can be performed as a separate operation, or a single matrix can be constructed that performs all three actions. Below is an example of a model transform matrix that performs all three transformations in one matrix multiplication. 
-```
+
+``` fennel
 (fn model-transform [translation scale rotation]
   (local {: cos : sin} math)
   (let [c3 (cos (. rotation 3))
@@ -124,7 +127,7 @@ The model transform matrix applies a translation, scale and rotation to a vec4 v
 
 The view matrix is similar to the model transform matrix, minus the scaling. To find a view matrix you need the position you would like to view the world from, the orientation / direction in which you would like to see the world (which way you are facing) and a vector defining which way is up. The vector defining which way is up will be dependent on the orientation used by the perspective matrix below. Here I use the cross products of the normalized position direction and up vectors to determine the rotation and the dot product to determine the translation.
 
-```
+``` fennel
 (fn view-direction [position direction up?]
   (local up-default [0 -1 0])
   (let [up (or up? up-default)
@@ -145,7 +148,7 @@ The perspective matrix is what gives your scene depth. You will need to have a y
 
 Note this is the right hand zo perspective matrix. I should be using the left hand zo matrix for compatibility with love2d. In the example you will notice that the controls when the perspective matrix is applied is inverted with the orthographic matrix is applied. Check out the glm library for the lhzo perspective matrix.
 
-```
+``` fennel
 (fn perspective-rhzo! [_ fov aspect near far]
   (local f  (math.tan (* (/ fov 2)) (/ 180 math.pi)))
   [ (/ 1 (* f aspect)) 0 0 0
